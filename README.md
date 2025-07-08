@@ -1,18 +1,6 @@
 # No BS Money Tracker
 
-This repo contains a minimal prototype of the **No BS Money Tracker** web app.
-It is built with Next.js, React, and Tailwind CSS and stores expenses in
-`localStorage` for offline support.
+This is a super light weight expense tracker built with plain HTML, CSS and JavaScript.
+All data is stored in your browser using `localStorage` so it works completely offline.
 
-Run locally:
-
-```bash
-npm install
-npm run dev
-```
-
-Run production build:
-
-```bash
-npm run build
-```
+Open `index.html` in your browser to start using it. No build step or dependencies are required.
