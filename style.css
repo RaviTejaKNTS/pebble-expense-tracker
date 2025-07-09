@@ -158,6 +158,17 @@ li {
   transform: rotate(45deg);
 }
 
+.fab-wrapper.closing .fab {
+  animation: fab-bounce 0.4s ease;
+}
+
+@keyframes fab-bounce {
+  0% { transform: rotate(0) translateY(0); }
+  30% { transform: rotate(0) translateY(4px); }
+  60% { transform: rotate(0) translateY(-2px); }
+  100% { transform: rotate(0) translateY(0); }
+}
+
 .close-btn {
   position: absolute;
   top: 6px;

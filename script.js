@@ -10,6 +10,25 @@ let selectedDate = new Date();
 let currentCalMonth = new Date();
 let selectedCategory = 'Food';
 
+function resetForm() {
+  const amount = document.getElementById('amount');
+  const note = document.getElementById('note');
+  selectedDate = new Date();
+  selectedCategory = 'Food';
+  if (amount) amount.value = '';
+  if (note) note.value = '';
+  const menu = document.getElementById('category-menu');
+  if (menu) {
+    const chips = menu.querySelectorAll('.chip');
+    chips.forEach(chip => chip.classList.toggle('selected', chip.dataset.value === selectedCategory));
+    menu.hidden = true;
+  }
+  const view = document.getElementById('calendar-view');
+  if (view) view.classList.remove('open');
+  updateDateDisplay();
+  updateCategoryDisplay();
+}
+
 function updateCategoryDisplay() {
   const catBtn = document.getElementById('category-btn');
   if (catBtn) catBtn.textContent = selectedCategory;
@@ -100,15 +119,19 @@ function togglePopup(open) {
   if (!wrapper) return;
   const willOpen = typeof open === 'boolean' ? open : !wrapper.classList.contains('open');
   wrapper.classList.toggle('open', willOpen);
-  const menu = document.getElementById('category-menu');
-  if (menu) menu.hidden = true;
   if (willOpen) {
-    updateDateDisplay();
-    updateCategoryDisplay();
+    resetForm();
     setTimeout(() => {
       const amount = document.getElementById('amount');
       if (amount) amount.focus();
     }, 0);
+  } else {
+    const menu = document.getElementById('category-menu');
+    if (menu) menu.hidden = true;
+    const view = document.getElementById('calendar-view');
+    if (view) view.classList.remove('open');
+    wrapper.classList.add('closing');
+    setTimeout(() => wrapper.classList.remove('closing'), 400);
   }
 }
 
