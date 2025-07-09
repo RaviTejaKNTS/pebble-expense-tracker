@@ -6,6 +6,24 @@ function getExpenses() {
   }
 }
 
+function getCurrency() {
+  return localStorage.getItem('currencySymbol') || '₹';
+}
+
+function getSymbolFromCode(code) {
+  try {
+    return Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency: code,
+      currencyDisplay: 'narrowSymbol'
+    })
+      .format(0)
+      .replace(/[\d\s.,]/g, '');
+  } catch {
+    return code;
+  }
+}
+
 let selectedDate = new Date();
 let currentCalMonth = new Date();
 let selectedCategory = 'Food';
@@ -86,7 +104,9 @@ function toggleCalendar(forceOpen) {
 function showExpenses() {
   const list = document.getElementById('list');
   const totalEl = document.getElementById('total');
+  if (!list || !totalEl) return;
   const expenses = getExpenses();
+  const symbol = getCurrency();
   let total = 0;
   list.innerHTML = '';
   expenses
@@ -95,10 +115,10 @@ function showExpenses() {
     .forEach(e => {
       total += e.amount;
       const li = document.createElement('li');
-      li.innerHTML = `<span>${e.date} - ${e.category}</span><span>₹${e.amount.toFixed(2)}</span>`;
+      li.innerHTML = `<span>${e.date} - ${e.category}</span><span>${symbol}${e.amount.toFixed(2)}</span>`;
       list.appendChild(li);
     });
-  totalEl.textContent = `₹${total.toFixed(2)}`;
+  totalEl.textContent = `${symbol}${total.toFixed(2)}`;
 }
 
 function saveExpense(e) {
@@ -133,6 +153,86 @@ function togglePopup(open) {
     wrapper.classList.add('closing');
     setTimeout(() => wrapper.classList.remove('closing'), 400);
   }
+}
+
+function initSettings() {
+  const form = document.getElementById('settings-form');
+  const btn = document.getElementById('currency-btn');
+  const menu = document.getElementById('currency-menu');
+  const search = document.getElementById('currency-search');
+  const opts = document.getElementById('currency-options');
+  const saveIcon = document.getElementById('save-icon');
+  if (!form || !btn || !menu || !search || !opts) return;
+
+  let codes = [];
+  if (Intl.supportedValuesOf) {
+    codes = Intl.supportedValuesOf('currency');
+  }
+  const currencies = codes.map(c => ({ code: c, symbol: getSymbolFromCode(c) }));
+  let selected = getCurrency();
+
+  function formatLabel(item) {
+    return `${item.code} (${item.symbol})`;
+  }
+
+  function renderOptions(filter = '') {
+    opts.innerHTML = '';
+    currencies.forEach(item => {
+      const label = formatLabel(item);
+      if (label.toLowerCase().includes(filter.toLowerCase())) {
+        const div = document.createElement('div');
+        div.className = 'currency-option';
+        if (item.symbol === selected) div.classList.add('selected');
+        div.textContent = label;
+        div.addEventListener('click', () => {
+          selected = item.symbol;
+          btn.textContent = label;
+          menu.hidden = true;
+        });
+        opts.appendChild(div);
+      }
+    });
+  }
+
+  const currentItem = currencies.find(i => i.symbol === selected) || currencies[0];
+  if (currentItem) {
+    btn.textContent = formatLabel(currentItem);
+  }
+  renderOptions();
+
+  btn.addEventListener('click', () => {
+    menu.hidden = !menu.hidden;
+    if (!menu.hidden) {
+      search.value = '';
+      renderOptions();
+      search.focus();
+    }
+  });
+
+  document.addEventListener('click', e => {
+    if (!btn.contains(e.target) && !menu.contains(e.target)) {
+      menu.hidden = true;
+    }
+  });
+
+  search.addEventListener('input', () => renderOptions(search.value));
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    localStorage.setItem('currencySymbol', selected);
+    if (saveIcon) {
+      saveIcon.textContent = '';
+      saveIcon.className = 'save-icon loading';
+      setTimeout(() => {
+        saveIcon.className = 'save-icon check';
+        saveIcon.textContent = '✔';
+        setTimeout(() => {
+          saveIcon.className = 'save-icon';
+          saveIcon.textContent = '';
+        }, 1500);
+      }, 800);
+    }
+  });
 }
 
 function init() {
@@ -206,6 +306,8 @@ function init() {
       }
     }
   });
+
+  initSettings();
 }
 
 document.addEventListener('DOMContentLoaded', init);
