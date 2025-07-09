@@ -13,7 +13,7 @@ let selectedCategory = 'Food';
 function updateDateDisplay() {
   const disp = document.getElementById('date-display');
   if (disp) {
-    disp.textContent = selectedDate.toISOString().slice(0, 10);
+    disp.textContent = selectedDate.toLocaleDateString('en-CA');
   }
 }
 
@@ -82,7 +82,7 @@ function saveExpense(e) {
   const amount = parseFloat(document.getElementById('amount').value);
   if (isNaN(amount)) return;
   const note = document.getElementById('note').value;
-  const date = selectedDate.toISOString().slice(0, 10);
+  const date = selectedDate.toLocaleDateString('en-CA');
   const expenses = getExpenses();
   expenses.push({ id: Date.now().toString(), amount, category: selectedCategory, note, date });
   localStorage.setItem('expenses', JSON.stringify(expenses));
