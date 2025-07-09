@@ -70,6 +70,17 @@ main {
   margin: 1rem 0;
 }
 
+.today-summary {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.today-amount {
+  font-size: 3.5rem;
+  font-weight: bold;
+  margin: 0.25rem 0 1.5rem;
+}
+
 .button {
   display: inline-block;
   background: var(--md-primary);

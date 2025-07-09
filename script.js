@@ -107,18 +107,21 @@ function showExpenses() {
   if (!list || !totalEl) return;
   const expenses = getExpenses();
   const symbol = getCurrency();
-  let total = 0;
+  let todayTotal = 0;
+  const today = new Date().toLocaleDateString('en-CA');
   list.innerHTML = '';
   expenses
     .slice()
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .forEach(e => {
-      total += e.amount;
+      if (e.date === today) {
+        todayTotal += e.amount;
+      }
       const li = document.createElement('li');
       li.innerHTML = `<span>${e.date} - ${e.category}</span><span>${symbol}${e.amount.toFixed(2)}</span>`;
       list.appendChild(li);
     });
-  totalEl.textContent = `${symbol}${total.toFixed(2)}`;
+  totalEl.textContent = `${symbol}${todayTotal.toFixed(2)}`;
 }
 
 function saveExpense(e) {
