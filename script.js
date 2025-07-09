@@ -10,6 +10,11 @@ let selectedDate = new Date();
 let currentCalMonth = new Date();
 let selectedCategory = 'Food';
 
+function updateCategoryDisplay() {
+  const catBtn = document.getElementById('category-btn');
+  if (catBtn) catBtn.textContent = selectedCategory;
+}
+
 function updateDateDisplay() {
   const disp = document.getElementById('date-display');
   if (disp) {
@@ -95,8 +100,11 @@ function togglePopup(open) {
   if (!wrapper) return;
   const willOpen = typeof open === 'boolean' ? open : !wrapper.classList.contains('open');
   wrapper.classList.toggle('open', willOpen);
+  const menu = document.getElementById('category-menu');
+  if (menu) menu.hidden = true;
   if (willOpen) {
     updateDateDisplay();
+    updateCategoryDisplay();
     setTimeout(() => {
       const amount = document.getElementById('amount');
       if (amount) amount.focus();
@@ -111,6 +119,7 @@ function init() {
     form.addEventListener('submit', saveExpense);
   }
   updateDateDisplay();
+  updateCategoryDisplay();
   const dateBtn = document.getElementById('calendar-btn');
   if (dateBtn) {
     dateBtn.addEventListener('click', () => toggleCalendar());
@@ -132,7 +141,7 @@ function init() {
     chips.forEach(chip => {
       chip.addEventListener('click', () => {
         selectedCategory = chip.dataset.value;
-        catBtn.textContent = selectedCategory;
+        updateCategoryDisplay();
         menu.hidden = true;
         chips.forEach(c => c.classList.toggle('selected', c === chip));
       });
