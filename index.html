@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>No BS Money Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="layout">
+    <nav class="sidebar">
+      <h2>No BS</h2>
+      <a href="index.html">Home</a>
+      <a href="categories.html">Categories</a>
+      <a href="settings.html">Settings</a>
+    </nav>
+    <main>
+      <h1>Remaining Budget</h1>
+      <div id="total" class="big"></div>
+      <ul id="list"></ul>
+    </main>
+    <div class="fab-wrapper">
+      <button id="fab" class="fab">+</button>
+      <form id="expense-form" class="popup">
+        <button type="button" id="close-popup" class="close-btn" aria-label="Close">&times;</button>
+        <div class="form-fields">
+          <input type="number" id="amount" placeholder="Amount" required>
+          <div class="category-select" id="category-select">
+            <button type="button" id="category-btn" class="select-btn">Food</button>
+            <div id="category-menu" class="chip-menu" hidden>
+              <button type="button" class="chip" data-value="Food">Food</button>
+              <button type="button" class="chip" data-value="Transport">Transport</button>
+              <button type="button" class="chip" data-value="Shopping">Shopping</button>
+              <button type="button" class="chip" data-value="Other">Other</button>
+            </div>
+          </div>
+          <input type="text" id="note" placeholder="Note (optional)">
+          <button type="button" id="calendar-btn" class="calendar-btn">📅 <span id="date-display">Today</span></button>
+          <div id="calendar-view" class="calendar-view">
+            <div class="calendar-header">
+              <button type="button" id="prev-month" class="cal-nav">‹</button>
+              <span id="cal-month"></span>
+              <button type="button" id="next-month" class="cal-nav">›</button>
+            </div>
+            <div id="cal-grid" class="calendar-grid"></div>
+          </div>
+          <button type="submit" id="save-btn" class="button">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
