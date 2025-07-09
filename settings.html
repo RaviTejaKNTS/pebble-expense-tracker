@@ -16,8 +16,19 @@
     </nav>
     <main>
       <h1>Settings</h1>
-      <p>App settings will appear here.</p>
+      <form id="settings-form" class="settings-form">
+        <label for="currency-btn">Currency</label>
+        <div class="currency-select">
+          <button type="button" id="currency-btn" class="select-btn"></button>
+          <div id="currency-menu" class="currency-menu" hidden>
+            <input type="text" id="currency-search" class="search-input" placeholder="Search currency">
+            <div id="currency-options" class="options"></div>
+          </div>
+        </div>
+        <button type="submit" id="settings-save" class="button">Save <span id="save-icon" class="save-icon"></span></button>
+      </form>
     </main>
   </div>
+  <script src="script.js"></script>
 </body>
 </html>
