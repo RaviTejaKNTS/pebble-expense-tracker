@@ -128,11 +128,13 @@ function init() {
     catBtn.addEventListener('click', () => {
       menu.hidden = !menu.hidden;
     });
-    menu.querySelectorAll('li').forEach(li => {
-      li.addEventListener('click', () => {
-        selectedCategory = li.dataset.value;
+    const chips = menu.querySelectorAll('.chip');
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        selectedCategory = chip.dataset.value;
         catBtn.textContent = selectedCategory;
         menu.hidden = true;
+        chips.forEach(c => c.classList.toggle('selected', c === chip));
       });
     });
     document.addEventListener('click', e => {

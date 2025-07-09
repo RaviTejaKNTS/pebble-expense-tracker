@@ -25,14 +25,14 @@
         <button type="button" id="close-popup" class="close-btn" aria-label="Close">&times;</button>
         <div class="form-fields">
           <input type="number" id="amount" placeholder="Amount" required>
-          <div class="dropdown" id="category-dropdown">
-            <button type="button" id="category-btn" class="dropdown-btn">Food</button>
-            <ul id="category-menu" class="dropdown-menu" hidden>
-              <li data-value="Food">Food</li>
-              <li data-value="Transport">Transport</li>
-              <li data-value="Shopping">Shopping</li>
-              <li data-value="Other">Other</li>
-            </ul>
+          <div class="category-select" id="category-select">
+            <button type="button" id="category-btn" class="select-btn">Food</button>
+            <div id="category-menu" class="chip-menu" hidden>
+              <button type="button" class="chip" data-value="Food">Food</button>
+              <button type="button" class="chip" data-value="Transport">Transport</button>
+              <button type="button" class="chip" data-value="Shopping">Shopping</button>
+              <button type="button" class="chip" data-value="Other">Other</button>
+            </div>
           </div>
           <input type="text" id="note" placeholder="Note (optional)">
           <button type="button" id="calendar-btn" class="calendar-btn">📅 <span id="date-display">Today</span></button>
