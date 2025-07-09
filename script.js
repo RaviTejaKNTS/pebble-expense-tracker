@@ -41,30 +41,21 @@ function buildCalendar() {
     }
     btn.addEventListener('click', () => {
       selectedDate = new Date(year, month, d);
-      hideCalendar();
+      toggleCalendar(false);
       updateDateDisplay();
     });
     grid.appendChild(btn);
   }
 }
 
-function showCalendar() {
+function toggleCalendar(forceOpen) {
   const view = document.getElementById('calendar-view');
-  const fields = document.querySelector('.form-fields');
-  if (view && fields) {
-    fields.hidden = true;
-    view.hidden = false;
+  if (!view) return;
+  const willOpen = typeof forceOpen === 'boolean' ? forceOpen : !view.classList.contains('open');
+  view.classList.toggle('open', willOpen);
+  if (willOpen) {
     currentCalMonth = new Date(selectedDate);
     buildCalendar();
-  }
-}
-
-function hideCalendar() {
-  const view = document.getElementById('calendar-view');
-  const fields = document.querySelector('.form-fields');
-  if (view && fields) {
-    view.hidden = true;
-    fields.hidden = false;
   }
 }
 
@@ -122,7 +113,7 @@ function init() {
   updateDateDisplay();
   const dateBtn = document.getElementById('calendar-btn');
   if (dateBtn) {
-    dateBtn.addEventListener('click', showCalendar);
+    dateBtn.addEventListener('click', () => toggleCalendar());
   }
   const prev = document.getElementById('prev-month');
   const next = document.getElementById('next-month');
@@ -174,8 +165,8 @@ function init() {
     const wrapperOpen = document.querySelector('.fab-wrapper').classList.contains('open');
     if (e.key === 'Escape' && wrapperOpen) {
       const view = document.getElementById('calendar-view');
-      if (view && !view.hidden) {
-        hideCalendar();
+      if (view && view.classList.contains('open')) {
+        toggleCalendar(false);
       } else {
         togglePopup(false);
       }

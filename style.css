@@ -68,6 +68,11 @@ main {
   border: none;
 }
 
+.popup .button {
+  background: var(--md-on-primary);
+  color: var(--md-primary);
+}
+
 form {
   display: flex;
   flex-direction: column;
@@ -183,9 +188,17 @@ li {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 0.5rem;
   background: var(--md-surface);
   border-radius: 8px;
+  overflow: hidden;
+  max-height: 0;
+  padding: 0 0.5rem;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.calendar-view.open {
+  max-height: 320px;
+  padding: 0.5rem;
 }
 
 .calendar-header {
