@@ -157,26 +157,81 @@ function togglePopup(open) {
 
 function initSettings() {
   const form = document.getElementById('settings-form');
-  const select = document.getElementById('currency-select');
-  if (!form || !select) return;
+  const btn = document.getElementById('currency-btn');
+  const menu = document.getElementById('currency-menu');
+  const search = document.getElementById('currency-search');
+  const opts = document.getElementById('currency-options');
+  const saveIcon = document.getElementById('save-icon');
+  if (!form || !btn || !menu || !search || !opts) return;
 
   let codes = [];
   if (Intl.supportedValuesOf) {
     codes = Intl.supportedValuesOf('currency');
   }
-  const current = getCurrency();
-  codes.forEach(code => {
-    const option = document.createElement('option');
-    const symbol = getSymbolFromCode(code);
-    option.value = symbol;
-    option.textContent = `${code} (${symbol})`;
-    select.appendChild(option);
+  const currencies = codes.map(c => ({ code: c, symbol: getSymbolFromCode(c) }));
+  let selected = getCurrency();
+
+  function formatLabel(item) {
+    return `${item.code} (${item.symbol})`;
+  }
+
+  function renderOptions(filter = '') {
+    opts.innerHTML = '';
+    currencies.forEach(item => {
+      const label = formatLabel(item);
+      if (label.toLowerCase().includes(filter.toLowerCase())) {
+        const div = document.createElement('div');
+        div.className = 'currency-option';
+        if (item.symbol === selected) div.classList.add('selected');
+        div.textContent = label;
+        div.addEventListener('click', () => {
+          selected = item.symbol;
+          btn.textContent = label;
+          menu.hidden = true;
+        });
+        opts.appendChild(div);
+      }
+    });
+  }
+
+  const currentItem = currencies.find(i => i.symbol === selected) || currencies[0];
+  if (currentItem) {
+    btn.textContent = formatLabel(currentItem);
+  }
+  renderOptions();
+
+  btn.addEventListener('click', () => {
+    menu.hidden = !menu.hidden;
+    if (!menu.hidden) {
+      search.value = '';
+      renderOptions();
+      search.focus();
+    }
   });
-  select.value = current;
+
+  document.addEventListener('click', e => {
+    if (!btn.contains(e.target) && !menu.contains(e.target)) {
+      menu.hidden = true;
+    }
+  });
+
+  search.addEventListener('input', () => renderOptions(search.value));
 
   form.addEventListener('submit', e => {
     e.preventDefault();
-    localStorage.setItem('currencySymbol', select.value);
+    localStorage.setItem('currencySymbol', selected);
+    if (saveIcon) {
+      saveIcon.textContent = '';
+      saveIcon.className = 'save-icon loading';
+      setTimeout(() => {
+        saveIcon.className = 'save-icon check';
+        saveIcon.textContent = '✔';
+        setTimeout(() => {
+          saveIcon.className = 'save-icon';
+          saveIcon.textContent = '';
+        }, 1500);
+      }, 800);
+    }
   });
 }
 
