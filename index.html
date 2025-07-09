@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>No BS Money Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="layout">
+    <nav class="sidebar">
+      <h2>No BS</h2>
+      <a href="index.html">Home</a>
+      <a href="categories.html">Categories</a>
+      <a href="settings.html">Settings</a>
+    </nav>
+    <main>
+      <h1>Remaining Budget</h1>
+      <div id="total" class="big"></div>
+      <ul id="list"></ul>
+    </main>
+    <div class="fab-wrapper">
+      <button id="fab" class="fab">+</button>
+      <form id="expense-form" class="popup">
+        <input type="number" id="amount" placeholder="Amount" required>
+        <select id="category">
+          <option>Food</option>
+          <option>Transport</option>
+          <option>Shopping</option>
+          <option>Other</option>
+        </select>
+        <input type="text" id="note" placeholder="Note (optional)">
+        <input type="date" id="date">
+        <button type="submit" class="button">Save</button>
+      </form>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
