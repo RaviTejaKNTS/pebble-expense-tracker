@@ -6,6 +6,24 @@ function getExpenses() {
   }
 }
 
+function getCurrency() {
+  return localStorage.getItem('currencySymbol') || '₹';
+}
+
+function getSymbolFromCode(code) {
+  try {
+    return Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency: code,
+      currencyDisplay: 'narrowSymbol'
+    })
+      .format(0)
+      .replace(/[\d\s.,]/g, '');
+  } catch {
+    return code;
+  }
+}
+
 let selectedDate = new Date();
 let currentCalMonth = new Date();
 let selectedCategory = 'Food';
@@ -86,7 +104,9 @@ function toggleCalendar(forceOpen) {
 function showExpenses() {
   const list = document.getElementById('list');
   const totalEl = document.getElementById('total');
+  if (!list || !totalEl) return;
   const expenses = getExpenses();
+  const symbol = getCurrency();
   let total = 0;
   list.innerHTML = '';
   expenses
@@ -95,10 +115,10 @@ function showExpenses() {
     .forEach(e => {
       total += e.amount;
       const li = document.createElement('li');
-      li.innerHTML = `<span>${e.date} - ${e.category}</span><span>₹${e.amount.toFixed(2)}</span>`;
+      li.innerHTML = `<span>${e.date} - ${e.category}</span><span>${symbol}${e.amount.toFixed(2)}</span>`;
       list.appendChild(li);
     });
-  totalEl.textContent = `₹${total.toFixed(2)}`;
+  totalEl.textContent = `${symbol}${total.toFixed(2)}`;
 }
 
 function saveExpense(e) {
@@ -133,6 +153,31 @@ function togglePopup(open) {
     wrapper.classList.add('closing');
     setTimeout(() => wrapper.classList.remove('closing'), 400);
   }
+}
+
+function initSettings() {
+  const form = document.getElementById('settings-form');
+  const select = document.getElementById('currency-select');
+  if (!form || !select) return;
+
+  let codes = [];
+  if (Intl.supportedValuesOf) {
+    codes = Intl.supportedValuesOf('currency');
+  }
+  const current = getCurrency();
+  codes.forEach(code => {
+    const option = document.createElement('option');
+    const symbol = getSymbolFromCode(code);
+    option.value = symbol;
+    option.textContent = `${code} (${symbol})`;
+    select.appendChild(option);
+  });
+  select.value = current;
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    localStorage.setItem('currencySymbol', select.value);
+  });
 }
 
 function init() {
@@ -206,6 +251,8 @@ function init() {
       }
     }
   });
+
+  initSettings();
 }
 
 document.addEventListener('DOMContentLoaded', init);
