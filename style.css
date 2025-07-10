@@ -4,7 +4,6 @@
   --md-surface: #fef7ff;
   --md-on-surface: #1c1b1f;
   --md-surface-variant: #e7e0ec;
-  --md-sidebar-light: #faf7ff;
 }
 
 [hidden] {
@@ -35,7 +34,8 @@ body {
 
 .sidebar.expanded {
   width: 33%;
-  background: var(--md-sidebar-light);
+  background: var(--md-primary);
+  color: var(--md-on-primary);
 }
 
 .sidebar.show-page .nav-top {
@@ -44,6 +44,7 @@ body {
 
 .sidebar.show-page .sidebar-content {
   margin-top: 0;
+  width: 100%;
 }
 
 .close-sidebar {
@@ -68,6 +69,8 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .sidebar h2 {
@@ -86,10 +89,19 @@ body {
   gap: 0.5rem;
 }
 
+.sidebar.expanded a {
+  color: var(--md-on-primary);
+}
+
 .sidebar a:hover,
 .sidebar a.active {
   background: var(--md-primary);
   color: var(--md-on-primary);
+}
+
+.sidebar.expanded a.active {
+  background: var(--md-on-primary);
+  color: var(--md-primary);
 }
 
 .sidebar a .icon {
@@ -101,6 +113,7 @@ body {
   margin-top: 1rem;
   flex: 1;
   overflow-y: auto;
+  width: 100%;
 }
 
 main {
@@ -364,8 +377,6 @@ input[type=number] {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  max-width: 300px;
-  margin: 0 auto;
   flex: 1;
 }
 
