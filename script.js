@@ -107,18 +107,21 @@ function showExpenses() {
   if (!list || !totalEl) return;
   const expenses = getExpenses();
   const symbol = getCurrency();
-  let total = 0;
+  let todayTotal = 0;
+  const today = new Date().toLocaleDateString('en-CA');
   list.innerHTML = '';
   expenses
     .slice()
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .forEach(e => {
-      total += e.amount;
-      const li = document.createElement('li');
-      li.innerHTML = `<span>${e.date} - ${e.category}</span><span>${symbol}${e.amount.toFixed(2)}</span>`;
-      list.appendChild(li);
+      if (e.date === today) {
+        todayTotal += e.amount;
+      }
+      const item = document.createElement('md-list-item');
+      item.innerHTML = `<div slot="headline">${e.date} - ${e.category}</div><div slot="end">${symbol}${e.amount.toFixed(2)}</div>`;
+      list.appendChild(item);
     });
-  totalEl.textContent = `${symbol}${total.toFixed(2)}`;
+  totalEl.textContent = `${symbol}${todayTotal.toFixed(2)}`;
 }
 
 function saveExpense(e) {
@@ -232,7 +235,46 @@ function initSettings() {
         }, 1500);
       }, 800);
     }
+    showExpenses();
   });
+}
+
+function initSidebarNav() {
+  const links = document.querySelectorAll('.sidebar md-list-item[data-page]');
+  const sidebar = document.querySelector('.sidebar');
+  const content = document.getElementById('sidebar-content');
+  const closeBtn = document.getElementById('close-sidebar');
+  if (!sidebar || !links.length || !content) return;
+
+  function closeSidebar() {
+    sidebar.classList.remove('expanded', 'show-page');
+    content.innerHTML = '';
+    links.forEach(l => l.toggleAttribute('selected', l.dataset.page === 'home'));
+    if (closeBtn) closeBtn.hidden = true;
+  }
+
+  links.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const page = link.dataset.page;
+      links.forEach(l => l.toggleAttribute('selected', l === link));
+      if (page === 'home') {
+        closeSidebar();
+      } else {
+        const tmpl = document.getElementById('tmpl-' + page);
+        if (tmpl) {
+          content.innerHTML = tmpl.innerHTML;
+          sidebar.classList.add('expanded', 'show-page');
+          if (closeBtn) closeBtn.hidden = false;
+          if (page === 'settings') initSettings();
+        }
+      }
+    });
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeSidebar);
+  }
 }
 
 function init() {
@@ -307,7 +349,7 @@ function init() {
     }
   });
 
-  initSettings();
+  initSidebarNav();
 }
 
 document.addEventListener('DOMContentLoaded', init);
