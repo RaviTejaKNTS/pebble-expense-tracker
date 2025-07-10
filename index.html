@@ -9,10 +9,12 @@
 <body>
   <div class="layout">
     <nav class="sidebar">
-      <h2>Pebble</h2>
-      <a href="#" data-page="home" class="active"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z" fill="currentColor"/></svg></span>Home</a>
-      <a href="#" data-page="categories"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v3H3V5zm0 6h18v3H3v-3zm0 6h18v3H3v-3z" fill="currentColor"/></svg></span>Categories</a>
-      <a href="#" data-page="settings"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm7.43-3.5c0-.38-.04-.75-.1-1.11l2.1-1.65-1.92-3.32-2.49 1a7.07 7.07 0 0 0-1.9-1.1L14 2h-4l-.52 3.82a7.07 7.07 0 0 0-1.9 1.1l-2.49-1-1.92 3.32 2.1 1.65c-.06.36-.1.73-.1 1.11s.04.75.1 1.11l-2.1 1.65 1.92 3.32 2.49-1a7.07 7.07 0 0 0 1.9 1.1L10 22h4l.52-3.82a7.07 7.07 0 0 0 1.9-1.1l2.49 1 1.92-3.32-2.1-1.65c.06-.36.1-.73.1-1.11z" fill="currentColor"/></svg></span>Settings</a>
+      <div class="nav-top">
+        <h2>Pebble</h2>
+        <a href="#" data-page="home" class="active"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z" fill="currentColor"/></svg></span>Home</a>
+        <a href="#" data-page="categories"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v3H3V5zm0 6h18v3H3v-3zm0 6h18v3H3v-3z" fill="currentColor"/></svg></span>Categories</a>
+        <a href="#" data-page="settings"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm7.43-3.5c0-.38-.04-.75-.1-1.11l2.1-1.65-1.92-3.32-2.49 1a7.07 7.07 0 0 0-1.9-1.1L14 2h-4l-.52 3.82a7.07 7.07 0 0 0-1.9 1.1l-2.49-1-1.92 3.32 2.1 1.65c-.06.36-.1.73-.1 1.11s.04.75.1 1.11l-2.1 1.65 1.92 3.32 2.49-1a7.07 7.07 0 0 0 1.9 1.1L10 22h4l.52-3.82a7.07 7.07 0 0 0 1.9-1.1l2.49 1 1.92-3.32-2.1-1.65c.06-.36.1-.73.1-1.11z" fill="currentColor"/></svg></span>Settings</a>
+      </div>
       <div id="sidebar-content" class="sidebar-content"></div>
     </nav>
     <main>
@@ -55,23 +57,27 @@
   <script src="script.js"></script>
 
   <template id="tmpl-categories">
-    <h1>Categories</h1>
-    <p>Manage your expense categories here.</p>
+    <div class="sidebar-page">
+      <h1>Categories</h1>
+      <p>Manage your expense categories here.</p>
+    </div>
   </template>
 
   <template id="tmpl-settings">
-    <h1>Settings</h1>
-    <form id="settings-form" class="settings-form">
-      <label for="currency-btn">Currency</label>
-      <div class="currency-select">
-        <button type="button" id="currency-btn" class="select-btn"></button>
-        <div id="currency-menu" class="currency-menu" hidden>
-          <input type="text" id="currency-search" class="search-input" placeholder="Search currency">
-          <div id="currency-options" class="options"></div>
+    <div class="sidebar-page">
+      <h1>Settings</h1>
+      <form id="settings-form" class="settings-form">
+        <label for="currency-btn">Currency</label>
+        <div class="currency-select">
+          <button type="button" id="currency-btn" class="select-btn"></button>
+          <div id="currency-menu" class="currency-menu" hidden>
+            <input type="text" id="currency-search" class="search-input" placeholder="Search currency">
+            <div id="currency-options" class="options"></div>
+          </div>
         </div>
-      </div>
-      <button type="submit" id="settings-save" class="button">Save <span id="save-icon" class="save-icon"></span></button>
-    </form>
+        <button type="submit" id="settings-save" class="button">Save <span id="save-icon" class="save-icon"></span></button>
+      </form>
+    </div>
   </template>
 </body>
 </html>

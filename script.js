@@ -250,13 +250,13 @@ function initSidebarNav() {
       const page = link.dataset.page;
       links.forEach(l => l.classList.toggle('active', l === link));
       if (page === 'home') {
-        sidebar.classList.remove('expanded');
+        sidebar.classList.remove('expanded', 'show-page');
         content.innerHTML = '';
       } else {
         const tmpl = document.getElementById('tmpl-' + page);
         if (tmpl) {
           content.innerHTML = tmpl.innerHTML;
-          sidebar.classList.add('expanded');
+          sidebar.classList.add('expanded', 'show-page');
           if (page === 'settings') initSettings();
         }
       }
