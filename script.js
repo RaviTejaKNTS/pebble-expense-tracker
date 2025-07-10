@@ -235,6 +235,32 @@ function initSettings() {
         }, 1500);
       }, 800);
     }
+    showExpenses();
+  });
+}
+
+function initSidebarNav() {
+  const links = document.querySelectorAll('.sidebar a[data-page]');
+  const sidebar = document.querySelector('.sidebar');
+  const content = document.getElementById('sidebar-content');
+  if (!sidebar || !links.length || !content) return;
+  links.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const page = link.dataset.page;
+      links.forEach(l => l.classList.toggle('active', l === link));
+      if (page === 'home') {
+        sidebar.classList.remove('expanded');
+        content.innerHTML = '';
+      } else {
+        const tmpl = document.getElementById('tmpl-' + page);
+        if (tmpl) {
+          content.innerHTML = tmpl.innerHTML;
+          sidebar.classList.add('expanded');
+          if (page === 'settings') initSettings();
+        }
+      }
+    });
   });
 }
 
@@ -310,7 +336,7 @@ function init() {
     }
   });
 
-  initSettings();
+  initSidebarNav();
 }
 
 document.addEventListener('DOMContentLoaded', init);
