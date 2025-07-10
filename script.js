@@ -117,9 +117,9 @@ function showExpenses() {
       if (e.date === today) {
         todayTotal += e.amount;
       }
-      const li = document.createElement('li');
-      li.innerHTML = `<span>${e.date} - ${e.category}</span><span>${symbol}${e.amount.toFixed(2)}</span>`;
-      list.appendChild(li);
+      const item = document.createElement('md-list-item');
+      item.innerHTML = `<div slot="headline">${e.date} - ${e.category}</div><div slot="end">${symbol}${e.amount.toFixed(2)}</div>`;
+      list.appendChild(item);
     });
   totalEl.textContent = `${symbol}${todayTotal.toFixed(2)}`;
 }
@@ -240,7 +240,7 @@ function initSettings() {
 }
 
 function initSidebarNav() {
-  const links = document.querySelectorAll('.sidebar a[data-page]');
+  const links = document.querySelectorAll('.sidebar md-list-item[data-page]');
   const sidebar = document.querySelector('.sidebar');
   const content = document.getElementById('sidebar-content');
   const closeBtn = document.getElementById('close-sidebar');
@@ -249,7 +249,7 @@ function initSidebarNav() {
   function closeSidebar() {
     sidebar.classList.remove('expanded', 'show-page');
     content.innerHTML = '';
-    links.forEach(l => l.classList.toggle('active', l.dataset.page === 'home'));
+    links.forEach(l => l.toggleAttribute('selected', l.dataset.page === 'home'));
     if (closeBtn) closeBtn.hidden = true;
   }
 
@@ -257,7 +257,7 @@ function initSidebarNav() {
     link.addEventListener('click', e => {
       e.preventDefault();
       const page = link.dataset.page;
-      links.forEach(l => l.classList.toggle('active', l === link));
+      links.forEach(l => l.toggleAttribute('selected', l === link));
       if (page === 'home') {
         closeSidebar();
       } else {

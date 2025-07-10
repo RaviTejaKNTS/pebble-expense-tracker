@@ -5,17 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Categories</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
+  <script type="module" src="https://unpkg.com/@material/web/all.min.js"></script>
 </head>
 <body>
   <div class="layout">
-    <nav class="sidebar">
-      <div class="nav-top">
-        <h2>Pebble</h2>
-        <a href="index.html"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z" fill="currentColor"/></svg></span>Home</a>
-        <a href="categories.html" class="active"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v3H3V5zm0 6h18v3H3v-3zm0 6h18v3H3v-3z" fill="currentColor"/></svg></span>Categories</a>
-        <a href="settings.html"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm7.43-3.5c0-.38-.04-.75-.1-1.11l2.1-1.65-1.92-3.32-2.49 1a7.07 7.07 0 0 0-1.9-1.1L14 2h-4l-.52 3.82a7.07 7.07 0 0 0-1.9 1.1l-2.49-1-1.92 3.32 2.1 1.65c-.06.36-.1.73-.1 1.11s.04.75.1 1.11l-2.1 1.65 1.92 3.32 2.49-1a7.07 7.07 0 0 0 1.9 1.1L10 22h4l.52-3.82a7.07 7.07 0 0 0 1.9-1.1l2.49 1 1.92-3.32-2.1-1.65c.06-.36.1-.73.1-1.11z" fill="currentColor"/></svg></span>Settings</a>
+    <md-navigation-drawer class="sidebar">
+      <div class="nav-top" slot="header">
+        <h2 class="app-title">Pebble</h2>
       </div>
-    </nav>
+      <md-list slot="navigation">
+        <md-list-item type="link" onclick="location.href='index.html'">
+          <md-icon slot="start">home</md-icon>
+          <div slot="headline">Home</div>
+        </md-list-item>
+        <md-list-item type="link" selected onclick="location.href='categories.html'">
+          <md-icon slot="start">list</md-icon>
+          <div slot="headline">Categories</div>
+        </md-list-item>
+        <md-list-item type="link" onclick="location.href='settings.html'">
+          <md-icon slot="start">settings</md-icon>
+          <div slot="headline">Settings</div>
+        </md-list-item>
+      </md-list>
+    </md-navigation-drawer>
     <main>
       <h1>Categories</h1>
       <p>Manage your expense categories here.</p>

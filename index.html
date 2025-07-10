@@ -5,52 +5,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pebble Expense Tracker</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" >
+  <script type="module" src="https://unpkg.com/@material/web/all.min.js"></script>
 </head>
 <body>
   <div class="layout">
-    <nav class="sidebar">
-      <div class="nav-top">
-        <h2>Pebble</h2>
-        <a href="#" data-page="home" class="active"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z" fill="currentColor"/></svg></span>Home</a>
-        <a href="#" data-page="categories"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v3H3V5zm0 6h18v3H3v-3zm0 6h18v3H3v-3z" fill="currentColor"/></svg></span>Categories</a>
-        <a href="#" data-page="settings"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm7.43-3.5c0-.38-.04-.75-.1-1.11l2.1-1.65-1.92-3.32-2.49 1a7.07 7.07 0 0 0-1.9-1.1L14 2h-4l-.52 3.82a7.07 7.07 0 0 0-1.9 1.1l-2.49-1-1.92 3.32 2.1 1.65c-.06.36-.1.73-.1 1.11s.04.75.1 1.11l-2.1 1.65 1.92 3.32 2.49-1a7.07 7.07 0 0 0 1.9 1.1L10 22h4l.52-3.82a7.07 7.07 0 0 0 1.9-1.1l2.49 1 1.92-3.32-2.1-1.65c.06-.36.1-.73.1-1.11z" fill="currentColor"/></svg></span>Settings</a>
+    <md-navigation-drawer id="drawer" class="sidebar">
+      <div class="nav-top" slot="header">
+        <h2 class="app-title">Pebble</h2>
+        <md-icon-button id="close-sidebar" icon="close" hidden></md-icon-button>
       </div>
-      <button type="button" id="close-sidebar" class="close-sidebar" aria-label="Close" hidden>&times;</button>
+      <md-list slot="navigation" id="sidebar-nav">
+        <md-list-item data-page="home" class="active">
+          <md-icon slot="start">home</md-icon>
+          <div slot="headline">Home</div>
+        </md-list-item>
+        <md-list-item data-page="categories">
+          <md-icon slot="start">list</md-icon>
+          <div slot="headline">Categories</div>
+        </md-list-item>
+        <md-list-item data-page="settings">
+          <md-icon slot="start">settings</md-icon>
+          <div slot="headline">Settings</div>
+        </md-list-item>
+      </md-list>
       <div id="sidebar-content" class="sidebar-content"></div>
-    </nav>
+    </md-navigation-drawer>
     <main>
       <div class="today-summary">
         <small class="today-label">Spent Today</small>
         <div id="total" class="today-amount"></div>
       </div>
-      <ul id="list"></ul>
+      <md-list id="list" class="expense-list"></md-list>
     </main>
     <div class="fab-wrapper">
-      <button id="fab" class="fab">+</button>
+      <md-fab id="fab" icon="add"></md-fab>
       <form id="expense-form" class="popup">
-        <button type="button" id="close-popup" class="close-btn" aria-label="Close">&times;</button>
+        <md-icon-button id="close-popup" class="close-btn" icon="close"></md-icon-button>
         <div class="form-fields">
-          <input type="number" id="amount" placeholder="Amount" required>
+          <md-outlined-text-field type="number" id="amount" label="Amount" required></md-outlined-text-field>
           <div class="category-select" id="category-select">
-            <button type="button" id="category-btn" class="select-btn">Food</button>
+            <md-filled-tonal-button type="button" id="category-btn" class="select-btn">Food</md-filled-tonal-button>
             <div id="category-menu" class="chip-menu" hidden>
-              <button type="button" class="chip" data-value="Food">Food</button>
-              <button type="button" class="chip" data-value="Transport">Transport</button>
-              <button type="button" class="chip" data-value="Shopping">Shopping</button>
-              <button type="button" class="chip" data-value="Other">Other</button>
+              <md-filled-tonal-button type="button" class="chip" data-value="Food">Food</md-filled-tonal-button>
+              <md-filled-tonal-button type="button" class="chip" data-value="Transport">Transport</md-filled-tonal-button>
+              <md-filled-tonal-button type="button" class="chip" data-value="Shopping">Shopping</md-filled-tonal-button>
+              <md-filled-tonal-button type="button" class="chip" data-value="Other">Other</md-filled-tonal-button>
             </div>
           </div>
-          <input type="text" id="note" placeholder="Note (optional)">
-          <button type="button" id="calendar-btn" class="calendar-btn">📅 <span id="date-display">Today</span></button>
+          <md-outlined-text-field id="note" label="Note (optional)"></md-outlined-text-field>
+          <md-filled-tonal-button type="button" id="calendar-btn" class="calendar-btn"><md-icon slot="icon">event</md-icon><span id="date-display">Today</span></md-filled-tonal-button>
           <div id="calendar-view" class="calendar-view">
             <div class="calendar-header">
-              <button type="button" id="prev-month" class="cal-nav">‹</button>
+              <md-icon-button type="button" id="prev-month" class="cal-nav" icon="chevron_left"></md-icon-button>
               <span id="cal-month"></span>
-              <button type="button" id="next-month" class="cal-nav">›</button>
+              <md-icon-button type="button" id="next-month" class="cal-nav" icon="chevron_right"></md-icon-button>
             </div>
             <div id="cal-grid" class="calendar-grid"></div>
           </div>
-          <button type="submit" id="save-btn" class="button">Save</button>
+          <md-filled-button type="submit" id="save-btn" class="button">Save</md-filled-button>
         </div>
       </form>
     </div>
@@ -70,13 +83,13 @@
       <form id="settings-form" class="settings-form">
         <label for="currency-btn">Currency</label>
         <div class="currency-select">
-          <button type="button" id="currency-btn" class="select-btn"></button>
+          <md-filled-tonal-button type="button" id="currency-btn" class="select-btn"></md-filled-tonal-button>
           <div id="currency-menu" class="currency-menu" hidden>
-            <input type="text" id="currency-search" class="search-input" placeholder="Search currency">
+            <md-outlined-text-field id="currency-search" class="search-input" label="Search currency"></md-outlined-text-field>
             <div id="currency-options" class="options"></div>
           </div>
         </div>
-        <button type="submit" id="settings-save" class="button">Save <span id="save-icon" class="save-icon"></span></button>
+        <md-filled-button type="submit" id="settings-save" class="button">Save <span id="save-icon" class="save-icon"></span></md-filled-button>
       </form>
     </div>
   </template>
