@@ -243,25 +243,38 @@ function initSidebarNav() {
   const links = document.querySelectorAll('.sidebar a[data-page]');
   const sidebar = document.querySelector('.sidebar');
   const content = document.getElementById('sidebar-content');
+  const closeBtn = document.getElementById('close-sidebar');
   if (!sidebar || !links.length || !content) return;
+
+  function closeSidebar() {
+    sidebar.classList.remove('expanded', 'show-page');
+    content.innerHTML = '';
+    links.forEach(l => l.classList.toggle('active', l.dataset.page === 'home'));
+    if (closeBtn) closeBtn.hidden = true;
+  }
+
   links.forEach(link => {
     link.addEventListener('click', e => {
       e.preventDefault();
       const page = link.dataset.page;
       links.forEach(l => l.classList.toggle('active', l === link));
       if (page === 'home') {
-        sidebar.classList.remove('expanded', 'show-page');
-        content.innerHTML = '';
+        closeSidebar();
       } else {
         const tmpl = document.getElementById('tmpl-' + page);
         if (tmpl) {
           content.innerHTML = tmpl.innerHTML;
           sidebar.classList.add('expanded', 'show-page');
+          if (closeBtn) closeBtn.hidden = false;
           if (page === 'settings') initSettings();
         }
       }
     });
   });
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeSidebar);
+  }
 }
 
 function init() {
