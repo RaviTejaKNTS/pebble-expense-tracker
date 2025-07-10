@@ -4,6 +4,7 @@
   --md-surface: #fef7ff;
   --md-on-surface: #1c1b1f;
   --md-surface-variant: #e7e0ec;
+  --md-sidebar-light: #faf7ff;
 }
 
 [hidden] {
@@ -23,12 +24,50 @@ body {
 }
 
 .sidebar {
-  width: 200px;
+  width: 20%;
   background: var(--md-surface-variant);
   padding: 1rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.sidebar.expanded {
+  width: 33%;
+  background: var(--md-sidebar-light);
+}
+
+.sidebar.show-page .nav-top {
+  display: none;
+}
+
+.sidebar.show-page .sidebar-content {
+  margin-top: 0;
+}
+
+.close-sidebar {
+  align-self: flex-end;
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  display: none;
+}
+
+.sidebar.expanded .close-sidebar {
+  display: block;
+}
+
+.sidebar-page h1 {
+  margin-top: 0;
+}
+
+.sidebar-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .sidebar h2 {
@@ -42,12 +81,26 @@ body {
   padding: 0.75rem 1rem;
   border-radius: 24px;
   margin-bottom: 0.25rem;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.sidebar a:hover {
+.sidebar a:hover,
+.sidebar a.active {
   background: var(--md-primary);
   color: var(--md-on-primary);
+}
+
+.sidebar a .icon {
+  width: 1.25em;
+  text-align: center;
+}
+
+.sidebar-content {
+  margin-top: 1rem;
+  flex: 1;
+  overflow-y: auto;
 }
 
 main {
@@ -60,6 +113,17 @@ main {
   font-size: 2.5rem;
   font-weight: bold;
   margin: 1rem 0;
+}
+
+.today-summary {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.today-amount {
+  font-size: 3.5rem;
+  font-weight: bold;
+  margin: 0.25rem 0 1.5rem;
 }
 
 .button {
@@ -96,13 +160,8 @@ ul {
   padding: 0;
 }
 
-li {
-  display: flex;
-  justify-content: space-between;
-  background: #fff;
-  padding: 0.75rem 1rem;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+.expense-list md-list-item {
+  --md-list-item-container-shape: 12px;
   margin-bottom: 0.5rem;
 }
 
@@ -307,6 +366,7 @@ input[type=number] {
   gap: 0.75rem;
   max-width: 300px;
   margin: 0 auto;
+  flex: 1;
 }
 
 .settings-form label {
@@ -358,10 +418,8 @@ input[type=number] {
 }
 
 #settings-save {
-  position: fixed;
-  bottom: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
+  align-self: center;
+  margin-top: auto;
 }
 
 .save-icon {
