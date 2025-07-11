@@ -131,6 +131,7 @@ function showExpenses() {
       details.innerHTML = `
         <input type="number" class="edit-amount" value="${e.amount}">
         <input type="text" class="edit-category" value="${e.category}">
+        <input type="date" class="edit-date" value="${e.date}">
         <input type="text" class="edit-note" placeholder="Note" value="${e.note || ''}">
         <div class="actions">
           <button type="button" class="delete-btn">Delete</button>
@@ -139,6 +140,9 @@ function showExpenses() {
       li.appendChild(details);
 
       summary.addEventListener('click', () => {
+        document.querySelectorAll('.expense-item.expanded').forEach(other => {
+          if (other !== li) other.classList.remove('expanded');
+        });
         li.classList.toggle('expanded');
       });
 
@@ -148,8 +152,9 @@ function showExpenses() {
       saveBtn.addEventListener('click', () => {
         const newAmount = parseFloat(details.querySelector('.edit-amount').value);
         const newCat = details.querySelector('.edit-category').value.trim() || e.category;
+        const newDate = details.querySelector('.edit-date').value || e.date;
         const newNote = details.querySelector('.edit-note').value;
-        updateExpense(e.id, newAmount, newCat, newNote);
+        updateExpense(e.id, newAmount, newCat, newNote, newDate);
       });
 
       list.appendChild(li);
@@ -157,13 +162,14 @@ function showExpenses() {
   totalEl.textContent = `${symbol}${todayTotal.toFixed(2)}`;
 }
 
-function updateExpense(id, amount, category, note) {
+function updateExpense(id, amount, category, note, date) {
   const expenses = getExpenses();
   const idx = expenses.findIndex(e => e.id === id);
   if (idx === -1) return;
   if (!isNaN(amount)) expenses[idx].amount = amount;
   expenses[idx].category = category;
   expenses[idx].note = note;
+  expenses[idx].date = date;
   localStorage.setItem('expenses', JSON.stringify(expenses));
   showExpenses();
 }
