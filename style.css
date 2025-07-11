@@ -198,6 +198,17 @@ li {
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   margin-bottom: 0.5rem;
+  overflow: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+li.expanded {
+  background: var(--md-primary);
+  color: var(--md-on-primary);
+}
+
+li.expanded .item-summary {
+  display: none;
 }
 
 .item-summary {
@@ -210,18 +221,19 @@ li {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-top: 0.5rem;
+  margin-top: 0;
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.4s ease;
-  background: var(--md-primary);
-  color: var(--md-on-primary);
-  padding: 1rem;
-  border-radius: 12px;
+  transition: max-height 0.4s ease, padding 0.3s ease, margin-top 0.3s ease;
+  background: transparent;
+  color: inherit;
+  padding: 0 1rem;
 }
 
 li.expanded .item-details {
   max-height: 500px;
+  padding: 1rem;
+  margin-top: 0.5rem;
 }
 
 .item-details .actions {
