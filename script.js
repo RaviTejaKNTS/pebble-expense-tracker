@@ -170,6 +170,7 @@ function showExpenses() {
       list.appendChild(li);
     });
   totalEl.textContent = `${symbol}${todayTotal.toFixed(2)}`;
+  document.dispatchEvent(new Event('expensesUpdated'));
 }
 
 function updateExpense(id, amount, category, note, date) {
@@ -182,12 +183,14 @@ function updateExpense(id, amount, category, note, date) {
   expenses[idx].date = date;
   localStorage.setItem('expenses', JSON.stringify(expenses));
   showExpenses();
+  document.dispatchEvent(new Event('expensesUpdated'));
 }
 
 function deleteExpense(id) {
   const expenses = getExpenses().filter(e => e.id !== id);
   localStorage.setItem('expenses', JSON.stringify(expenses));
   showExpenses();
+  document.dispatchEvent(new Event('expensesUpdated'));
 }
 
 function initEditItem(li, expense) {
@@ -289,6 +292,7 @@ function saveExpense(e) {
   localStorage.setItem('expenses', JSON.stringify(expenses));
   togglePopup(false);
   showExpenses();
+  document.dispatchEvent(new Event('expensesUpdated'));
 }
 
 function togglePopup(open) {

@@ -19,11 +19,7 @@
       <div id="sidebar-content" class="sidebar-content"></div>
     </nav>
     <main>
-      <div class="today-summary">
-        <small class="today-label">Spent Today</small>
-        <div id="total" class="today-amount"></div>
-      </div>
-      <ul id="list"></ul>
+      <div id="app"></div>
     </main>
     <div class="fab-wrapper">
       <button id="fab" class="fab">+</button>
@@ -56,6 +52,9 @@
     </div>
   </div>
   <script src="script.js"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="app.js"></script>
 
   <template id="tmpl-categories">
     <div class="sidebar-page">
