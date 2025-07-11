@@ -224,16 +224,12 @@ function initSettings() {
     e.preventDefault();
     localStorage.setItem('currencySymbol', selected);
     if (saveIcon) {
-      saveIcon.textContent = '';
-      saveIcon.className = 'save-icon loading';
+      saveIcon.textContent = '✔';
+      saveIcon.className = 'save-icon show';
       setTimeout(() => {
-        saveIcon.className = 'save-icon check';
-        saveIcon.textContent = '✔';
-        setTimeout(() => {
-          saveIcon.className = 'save-icon';
-          saveIcon.textContent = '';
-        }, 1500);
-      }, 800);
+        saveIcon.className = 'save-icon';
+        saveIcon.textContent = '';
+      }, 1000);
     }
     showExpenses();
   });
