@@ -118,10 +118,164 @@ function showExpenses() {
         todayTotal += e.amount;
       }
       const li = document.createElement('li');
-      li.innerHTML = `<span>${e.date} - ${e.category}</span><span>${symbol}${e.amount.toFixed(2)}</span>`;
+      li.className = 'expense-item';
+      li.dataset.id = e.id;
+
+      const summary = document.createElement('div');
+      summary.className = 'item-summary';
+      summary.innerHTML = `<span>${e.date} - ${e.category}</span><span>${symbol}${e.amount.toFixed(2)}</span>`;
+      li.appendChild(summary);
+
+
+      const details = document.createElement('div');
+      details.className = 'item-details';
+      details.innerHTML = `
+        <div class="form-fields">
+          <input type="number" class="edit-amount" value="${e.amount}">
+          <div class="category-select">
+            <button type="button" class="edit-cat-btn select-btn">${e.category}</button>
+            <div class="chip-menu edit-cat-menu" hidden>
+              <button type="button" class="chip" data-value="Food">Food</button>
+              <button type="button" class="chip" data-value="Transport">Transport</button>
+              <button type="button" class="chip" data-value="Shopping">Shopping</button>
+              <button type="button" class="chip" data-value="Other">Other</button>
+            </div>
+          </div>
+          <input type="text" class="edit-note" placeholder="Note" value="${e.note || ''}">
+          <button type="button" class="edit-date-btn calendar-btn">📅 <span class="edit-date-display"></span></button>
+          <div class="calendar-view edit-cal-view">
+            <div class="calendar-header">
+              <button type="button" class="cal-nav edit-prev-month">‹</button>
+              <span class="edit-cal-month"></span>
+              <button type="button" class="cal-nav edit-next-month">›</button>
+            </div>
+            <div class="calendar-grid edit-cal-grid"></div>
+          </div>
+          <div class="actions">
+            <button type="button" class="delete-btn">Delete</button>
+            <button type="button" class="save-btn">Save</button>
+          </div>
+        </div>`;
+      li.appendChild(details);
+
+      summary.addEventListener('click', () => {
+        document.querySelectorAll('.expense-item.expanded').forEach(other => {
+          if (other !== li) other.classList.remove('expanded');
+        });
+        li.classList.toggle('expanded');
+      });
+
+      initEditItem(li, e);
+
       list.appendChild(li);
     });
   totalEl.textContent = `${symbol}${todayTotal.toFixed(2)}`;
+}
+
+function updateExpense(id, amount, category, note, date) {
+  const expenses = getExpenses();
+  const idx = expenses.findIndex(e => e.id === id);
+  if (idx === -1) return;
+  if (!isNaN(amount)) expenses[idx].amount = amount;
+  expenses[idx].category = category;
+  expenses[idx].note = note;
+  expenses[idx].date = date;
+  localStorage.setItem('expenses', JSON.stringify(expenses));
+  showExpenses();
+}
+
+function deleteExpense(id) {
+  const expenses = getExpenses().filter(e => e.id !== id);
+  localStorage.setItem('expenses', JSON.stringify(expenses));
+  showExpenses();
+}
+
+function initEditItem(li, expense) {
+  const details = li.querySelector('.item-details');
+  if (!details) return;
+
+  const amountInput = details.querySelector('.edit-amount');
+  const noteInput = details.querySelector('.edit-note');
+  const catBtn = details.querySelector('.edit-cat-btn');
+  const catMenu = details.querySelector('.edit-cat-menu');
+  const calendarBtn = details.querySelector('.edit-date-btn');
+  const calendarView = details.querySelector('.edit-cal-view');
+  const calMonth = details.querySelector('.edit-cal-month');
+  const calGrid = details.querySelector('.edit-cal-grid');
+  const prevMonth = details.querySelector('.edit-prev-month');
+  const nextMonth = details.querySelector('.edit-next-month');
+
+  let selectedDate = new Date(expense.date);
+  let currentMonth = new Date(selectedDate);
+
+  function updateDateDisplay() {
+    const span = calendarBtn.querySelector('.edit-date-display');
+    if (span) span.textContent = selectedDate.toLocaleDateString('en-CA');
+  }
+
+  function buildCal() {
+    calGrid.innerHTML = '';
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    calMonth.textContent = currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' });
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    for (let i = 0; i < firstDay; i++) {
+      calGrid.appendChild(document.createElement('div'));
+    }
+    for (let d = 1; d <= daysInMonth; d++) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = d;
+      btn.className = 'calendar-day';
+      if (year === selectedDate.getFullYear() && month === selectedDate.getMonth() && d === selectedDate.getDate()) {
+        btn.classList.add('selected');
+      }
+      btn.addEventListener('click', () => {
+        selectedDate = new Date(year, month, d);
+        calendarView.classList.remove('open');
+        updateDateDisplay();
+      });
+      calGrid.appendChild(btn);
+    }
+  }
+
+  calendarBtn.addEventListener('click', () => {
+    const open = calendarView.classList.contains('open');
+    calendarView.classList.toggle('open', !open);
+    if (!open) {
+      currentMonth = new Date(selectedDate);
+      buildCal();
+    }
+  });
+  prevMonth.addEventListener('click', () => { currentMonth.setMonth(currentMonth.getMonth() - 1); buildCal(); });
+  nextMonth.addEventListener('click', () => { currentMonth.setMonth(currentMonth.getMonth() + 1); buildCal(); });
+
+  updateDateDisplay();
+
+  catBtn.addEventListener('click', () => { catMenu.hidden = !catMenu.hidden; });
+  catMenu.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      catBtn.textContent = chip.dataset.value;
+      catMenu.hidden = true;
+    });
+  });
+  document.addEventListener('click', e => {
+    if (!catBtn.contains(e.target) && !catMenu.contains(e.target)) {
+      catMenu.hidden = true;
+    }
+  });
+
+  const delBtn = details.querySelector('.delete-btn');
+  const saveBtn = details.querySelector('.save-btn');
+  delBtn.addEventListener('click', () => deleteExpense(expense.id));
+  saveBtn.addEventListener('click', () => {
+    const newAmount = parseFloat(amountInput.value);
+    const newCat = catBtn.textContent.trim() || expense.category;
+    const newDate = selectedDate.toLocaleDateString('en-CA');
+    const newNote = noteInput.value;
+    updateExpense(expense.id, newAmount, newCat, newNote, newDate);
+  });
 }
 
 function saveExpense(e) {
@@ -224,16 +378,12 @@ function initSettings() {
     e.preventDefault();
     localStorage.setItem('currencySymbol', selected);
     if (saveIcon) {
-      saveIcon.textContent = '';
-      saveIcon.className = 'save-icon loading';
+      saveIcon.textContent = '✔';
+      saveIcon.className = 'save-icon show';
       setTimeout(() => {
-        saveIcon.className = 'save-icon check';
-        saveIcon.textContent = '✔';
-        setTimeout(() => {
-          saveIcon.className = 'save-icon';
-          saveIcon.textContent = '';
-        }, 1500);
-      }, 800);
+        saveIcon.className = 'save-icon';
+        saveIcon.textContent = '';
+      }, 1000);
     }
     showExpenses();
   });
