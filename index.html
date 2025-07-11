@@ -19,11 +19,19 @@
       <div id="sidebar-content" class="sidebar-content"></div>
     </nav>
     <main>
-      <div class="today-summary">
-        <small class="today-label">Spent Today</small>
-        <div id="total" class="today-amount"></div>
+      <div class="home-grid">
+        <div class="today-summary grid-item">
+          <small class="today-label">Spent Today</small>
+          <div id="total" class="today-amount"></div>
+        </div>
+        <section id="transactions-section" class="transactions-section grid-item">
+          <div class="trans-header">
+            <h2>Transactions</h2>
+            <button type="button" id="view-all" class="view-all">View all transactions</button>
+          </div>
+          <div id="transactions-list"></div>
+        </section>
       </div>
-      <ul id="list"></ul>
     </main>
     <div class="fab-wrapper">
       <button id="fab" class="fab">+</button>
