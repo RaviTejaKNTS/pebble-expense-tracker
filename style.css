@@ -214,6 +214,10 @@ li {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.4s ease;
+  background: var(--md-primary);
+  color: var(--md-on-primary);
+  padding: 1rem;
+  border-radius: 12px;
 }
 
 li.expanded .item-details {
@@ -241,6 +245,13 @@ li.expanded .item-details {
   padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
+}
+
+.item-details input,
+.item-details .select-btn,
+.item-details .calendar-btn {
+  background: var(--md-on-primary);
+  color: var(--md-primary);
 }
 
 .fab-wrapper {
