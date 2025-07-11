@@ -30,12 +30,23 @@ body {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  transition: width 0.3s ease, background 0.3s ease;
+  transition: width 0.3s ease, background 0.3s ease, color 0.3s ease;
 }
 
 .sidebar.expanded {
   width: 33%;
-  background: var(--md-sidebar-light);
+  background: var(--md-primary);
+  color: var(--md-on-primary);
+}
+
+.sidebar.expanded a {
+  color: var(--md-on-primary);
+}
+
+.sidebar.expanded a:hover,
+.sidebar.expanded a.active {
+  background: var(--md-on-primary);
+  color: var(--md-primary);
 }
 
 .sidebar.show-page .nav-top {
@@ -58,6 +69,7 @@ body {
 
 .sidebar.expanded .close-sidebar {
   display: block;
+  color: var(--md-on-primary);
 }
 
 .sidebar-page h1 {
@@ -84,6 +96,8 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .sidebar a:hover,
@@ -369,8 +383,7 @@ input[type=number] {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  max-width: 300px;
-  margin: 0 auto;
+  width: 100%;
   flex: 1;
 }
 
