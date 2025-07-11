@@ -139,14 +139,15 @@ main > * {
 .today-summary {
   text-align: center;
   margin: 2rem auto 1rem;
-  width: 33%;
-  min-width: 200px;
+  min-width: 33%;
+  width: fit-content;
 }
 
 .today-amount {
   font-size: 4rem;
   font-weight: bold;
   margin: 0.25rem 0 1.5rem;
+  overflow-wrap: anywhere;
 }
 
 .button {
@@ -186,17 +187,57 @@ ul {
 #list {
   width: 100%;
   max-width: 600px;
-  margin: 0 auto;
+  margin-left: 0;
+  align-self: flex-start;
 }
 
 li {
-  display: flex;
-  justify-content: space-between;
+  display: block;
   background: #fff;
   padding: 0.75rem 1rem;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   margin-bottom: 0.5rem;
+}
+
+.item-summary {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.item-details {
+  display: none;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+li.expanded .item-details {
+  display: flex;
+}
+
+.item-details .actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.delete-btn {
+  background: #d32f2f;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.save-btn {
+  background: var(--md-primary);
+  color: var(--md-on-primary);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .fab-wrapper {

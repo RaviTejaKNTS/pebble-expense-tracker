@@ -118,10 +118,60 @@ function showExpenses() {
         todayTotal += e.amount;
       }
       const li = document.createElement('li');
-      li.innerHTML = `<span>${e.date} - ${e.category}</span><span>${symbol}${e.amount.toFixed(2)}</span>`;
+      li.className = 'expense-item';
+      li.dataset.id = e.id;
+
+      const summary = document.createElement('div');
+      summary.className = 'item-summary';
+      summary.innerHTML = `<span>${e.date} - ${e.category}</span><span>${symbol}${e.amount.toFixed(2)}</span>`;
+      li.appendChild(summary);
+
+      const details = document.createElement('div');
+      details.className = 'item-details';
+      details.innerHTML = `
+        <input type="number" class="edit-amount" value="${e.amount}">
+        <input type="text" class="edit-category" value="${e.category}">
+        <input type="text" class="edit-note" placeholder="Note" value="${e.note || ''}">
+        <div class="actions">
+          <button type="button" class="delete-btn">Delete</button>
+          <button type="button" class="save-btn">Save</button>
+        </div>`;
+      li.appendChild(details);
+
+      summary.addEventListener('click', () => {
+        li.classList.toggle('expanded');
+      });
+
+      const delBtn = details.querySelector('.delete-btn');
+      delBtn.addEventListener('click', () => deleteExpense(e.id));
+      const saveBtn = details.querySelector('.save-btn');
+      saveBtn.addEventListener('click', () => {
+        const newAmount = parseFloat(details.querySelector('.edit-amount').value);
+        const newCat = details.querySelector('.edit-category').value.trim() || e.category;
+        const newNote = details.querySelector('.edit-note').value;
+        updateExpense(e.id, newAmount, newCat, newNote);
+      });
+
       list.appendChild(li);
     });
   totalEl.textContent = `${symbol}${todayTotal.toFixed(2)}`;
+}
+
+function updateExpense(id, amount, category, note) {
+  const expenses = getExpenses();
+  const idx = expenses.findIndex(e => e.id === id);
+  if (idx === -1) return;
+  if (!isNaN(amount)) expenses[idx].amount = amount;
+  expenses[idx].category = category;
+  expenses[idx].note = note;
+  localStorage.setItem('expenses', JSON.stringify(expenses));
+  showExpenses();
+}
+
+function deleteExpense(id) {
+  const expenses = getExpenses().filter(e => e.id !== id);
+  localStorage.setItem('expenses', JSON.stringify(expenses));
+  showExpenses();
 }
 
 function saveExpense(e) {
