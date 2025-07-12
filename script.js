@@ -65,6 +65,7 @@ function fitAmount(el) {
 let selectedDate = new Date();
 let currentCalMonth = new Date();
 let selectedCategory = 'Food';
+let viewAllTransactions = false;
 
 function resetForm() {
   const amount = document.getElementById('amount');
@@ -139,7 +140,7 @@ function toggleCalendar(forceOpen) {
   }
 }
 
-function showExpenses() {
+function showExpenses(showAll = false) {
   const list = document.getElementById('list');
   const totalEl = document.getElementById('total');
   const monthlyEl = document.getElementById('monthly-total');
@@ -169,6 +170,7 @@ function showExpenses() {
           monthTotal += e.amount;
         }
       }
+      if (!showAll && e.date !== today) return;
       const li = document.createElement('li');
       li.className = 'expense-item';
       li.dataset.id = e.id;
@@ -252,13 +254,13 @@ function updateExpense(id, amount, category, note, date) {
   expenses[idx].note = note;
   expenses[idx].date = date;
   localStorage.setItem('expenses', JSON.stringify(expenses));
-  showExpenses();
+  showExpenses(viewAllTransactions);
 }
 
 function deleteExpense(id) {
   const expenses = getExpenses().filter(e => e.id !== id);
   localStorage.setItem('expenses', JSON.stringify(expenses));
-  showExpenses();
+  showExpenses(viewAllTransactions);
 }
 
 function initEditItem(li, expense) {
@@ -359,7 +361,7 @@ function saveExpense(e) {
   expenses.push({ id: Date.now().toString(), amount, category: selectedCategory, note, date });
   localStorage.setItem('expenses', JSON.stringify(expenses));
   togglePopup(false);
-  showExpenses();
+  showExpenses(viewAllTransactions);
 }
 
 function togglePopup(open) {
@@ -474,7 +476,7 @@ function initSettings() {
         saveIcon.textContent = '';
       }, 1000);
     }
-    showExpenses();
+    showExpenses(viewAllTransactions);
     applyWidgetSettings();
   });
 }
@@ -518,7 +520,7 @@ function initSidebarNav() {
 }
 
 function init() {
-  showExpenses();
+  showExpenses(viewAllTransactions);
   applyWidgetSettings();
   const form = document.getElementById('expense-form');
   if (form) {
@@ -556,6 +558,19 @@ function init() {
       if (!catBtn.contains(e.target) && !menu.contains(e.target)) {
         menu.hidden = true;
       }
+    });
+  }
+
+  const toggleBtn = document.getElementById('toggle-transactions');
+  const txSection = document.getElementById('transactions-section');
+  const txTitle = document.querySelector('.transactions-title');
+  if (toggleBtn && txSection && txTitle) {
+    toggleBtn.addEventListener('click', () => {
+      viewAllTransactions = !viewAllTransactions;
+      txSection.classList.toggle('fullscreen', viewAllTransactions);
+      toggleBtn.textContent = viewAllTransactions ? 'Close' : 'View all Transactions';
+      txTitle.textContent = viewAllTransactions ? 'All Transactions' : "Today's Spends";
+      showExpenses(viewAllTransactions);
     });
   }
 

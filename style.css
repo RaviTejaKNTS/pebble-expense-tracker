@@ -148,6 +148,47 @@ main > * {
   padding: 0;
 }
 
+.transactions-section {
+  background: var(--md-surface-variant);
+  border: 1px solid var(--md-primary);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  overflow-y: hidden;
+  transition: max-height 0.4s ease;
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.transactions-section.fullscreen {
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  border-radius: 0;
+  background: var(--md-surface);
+  max-height: none;
+  z-index: 10;
+  overflow-y: auto;
+}
+
+.transactions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--md-primary);
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font: inherit;
+}
+
 .summary-widget {
   flex: 1;
   text-align: center;
@@ -218,14 +259,15 @@ ul {
 
 #list {
   width: 100%;
-  max-width: 600px;
+  max-width: none;
   margin-left: 0;
-  align-self: flex-start;
+  align-self: stretch;
 }
 
 li {
   display: block;
-  background: #fff;
+  background: var(--md-surface);
+  border: 1px solid var(--md-primary);
   padding: 0.75rem 1rem;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
