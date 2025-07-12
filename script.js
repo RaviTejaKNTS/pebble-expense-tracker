@@ -10,6 +10,19 @@ function getCurrency() {
   return localStorage.getItem('currencySymbol') || '₹';
 }
 
+function getBudgetAmount() {
+  const val = parseFloat(localStorage.getItem('budgetAmount') || '0');
+  return isNaN(val) ? 0 : val;
+}
+
+function getEnabledWidgets() {
+  try {
+    return JSON.parse(localStorage.getItem('widgets') || '[]');
+  } catch {
+    return [];
+  }
+}
+
 function getSymbolFromCode(code) {
   try {
     return Intl.NumberFormat(undefined, {
@@ -104,11 +117,17 @@ function toggleCalendar(forceOpen) {
 function showExpenses() {
   const list = document.getElementById('list');
   const totalEl = document.getElementById('total');
+  const monthlyEl = document.getElementById('monthly-total');
+  const budgetEl = document.getElementById('budget-remaining');
   if (!list || !totalEl) return;
   const expenses = getExpenses();
   const symbol = getCurrency();
   let todayTotal = 0;
+  let monthTotal = 0;
   const today = new Date().toLocaleDateString('en-CA');
+  const now = new Date();
+  const curYear = now.getFullYear();
+  const curMonth = now.getMonth();
   list.innerHTML = '';
   expenses
     .slice()
@@ -116,6 +135,14 @@ function showExpenses() {
     .forEach(e => {
       if (e.date === today) {
         todayTotal += e.amount;
+      }
+      const parts = e.date.split('-');
+      if (parts.length === 3) {
+        const y = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10) - 1;
+        if (y === curYear && m === curMonth) {
+          monthTotal += e.amount;
+        }
       }
       const li = document.createElement('li');
       li.className = 'expense-item';
@@ -170,6 +197,19 @@ function showExpenses() {
       list.appendChild(li);
     });
   totalEl.textContent = `${symbol}${todayTotal.toFixed(2)}`;
+  if (monthlyEl) monthlyEl.textContent = `${symbol}${monthTotal.toFixed(2)}`;
+  if (budgetEl) {
+    const remaining = getBudgetAmount() - monthTotal;
+    budgetEl.textContent = `${symbol}${remaining.toFixed(2)}`;
+  }
+}
+
+function applyWidgetSettings() {
+  const widgets = getEnabledWidgets();
+  const monthlySummary = document.getElementById('monthly-summary');
+  const budgetSummary = document.getElementById('budget-summary');
+  if (monthlySummary) monthlySummary.hidden = !widgets.includes('monthly');
+  if (budgetSummary) budgetSummary.hidden = !widgets.includes('budget');
 }
 
 function updateExpense(id, amount, category, note, date) {
@@ -319,6 +359,9 @@ function initSettings() {
   const search = document.getElementById('currency-search');
   const opts = document.getElementById('currency-options');
   const saveIcon = document.getElementById('save-icon');
+  const budgetInput = document.getElementById('budget-input');
+  const monthlyChk = document.getElementById('widget-monthly-setting');
+  const budgetChk = document.getElementById('widget-budget-setting');
   if (!form || !btn || !menu || !search || !opts) return;
 
   let codes = [];
@@ -357,6 +400,11 @@ function initSettings() {
   }
   renderOptions();
 
+  if (budgetInput) budgetInput.value = getBudgetAmount() || '';
+  const enabled = getEnabledWidgets();
+  if (monthlyChk) monthlyChk.checked = enabled.includes('monthly');
+  if (budgetChk) budgetChk.checked = enabled.includes('budget');
+
   btn.addEventListener('click', () => {
     menu.hidden = !menu.hidden;
     if (!menu.hidden) {
@@ -377,6 +425,16 @@ function initSettings() {
   form.addEventListener('submit', e => {
     e.preventDefault();
     localStorage.setItem('currencySymbol', selected);
+    if (budgetInput) {
+      const val = parseFloat(budgetInput.value);
+      if (!isNaN(val)) {
+        localStorage.setItem('budgetAmount', val.toString());
+      }
+    }
+    const widgetList = [];
+    if (monthlyChk && monthlyChk.checked) widgetList.push('monthly');
+    if (budgetChk && budgetChk.checked) widgetList.push('budget');
+    localStorage.setItem('widgets', JSON.stringify(widgetList));
     if (saveIcon) {
       saveIcon.textContent = '✔';
       saveIcon.className = 'save-icon show';
@@ -386,6 +444,7 @@ function initSettings() {
       }, 1000);
     }
     showExpenses();
+    applyWidgetSettings();
   });
 }
 
@@ -429,6 +488,7 @@ function initSidebarNav() {
 
 function init() {
   showExpenses();
+  applyWidgetSettings();
   const form = document.getElementById('expense-form');
   if (form) {
     form.addEventListener('submit', saveExpense);
