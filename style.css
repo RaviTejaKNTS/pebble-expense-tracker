@@ -141,6 +141,10 @@ main > * {
   margin: 2rem auto 1rem;
   min-width: 33%;
   width: fit-content;
+  padding: 1rem;
+  background: var(--md-surface-variant);
+  border: 1px solid var(--md-primary);
+  border-radius: 12px;
 }
 
 .today-amount {
