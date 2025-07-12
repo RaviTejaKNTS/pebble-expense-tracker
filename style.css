@@ -155,10 +155,14 @@ main > * {
   padding: 1rem;
   margin-bottom: 1rem;
   overflow-y: hidden;
-  transition: max-height 0.4s ease;
+  transition: all 0.4s ease;
   max-height: 400px;
   display: flex;
   flex-direction: column;
+  align-self: flex-start;
+  width: 100%;
+  max-width: none;
+  position: relative;
 }
 
 .transactions-section.fullscreen {
@@ -167,7 +171,7 @@ main > * {
   margin: 0;
   border-radius: 0;
   background: var(--md-surface);
-  max-height: none;
+  max-height: calc(100vh - 2rem);
   z-index: 10;
   overflow-y: auto;
 }
@@ -187,6 +191,23 @@ main > * {
   text-decoration: underline;
   padding: 0;
   font: inherit;
+}
+
+.close-transactions {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--md-primary);
+  cursor: pointer;
+  display: none;
+}
+
+.transactions-section.fullscreen .close-transactions {
+  display: block;
 }
 
 .summary-widget {

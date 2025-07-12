@@ -564,14 +564,22 @@ function init() {
   const toggleBtn = document.getElementById('toggle-transactions');
   const txSection = document.getElementById('transactions-section');
   const txTitle = document.querySelector('.transactions-title');
-  if (toggleBtn && txSection && txTitle) {
-    toggleBtn.addEventListener('click', () => {
-      viewAllTransactions = !viewAllTransactions;
-      txSection.classList.toggle('fullscreen', viewAllTransactions);
-      toggleBtn.textContent = viewAllTransactions ? 'Close' : 'View all Transactions';
-      txTitle.textContent = viewAllTransactions ? 'All Transactions' : "Today's Spends";
-      showExpenses(viewAllTransactions);
-    });
+  const closeTx = document.getElementById('close-transactions');
+  function openTransactions() {
+    viewAllTransactions = true;
+    txSection.classList.add('fullscreen');
+    txTitle.textContent = 'All Transactions';
+    showExpenses(true);
+  }
+  function closeTransactions() {
+    viewAllTransactions = false;
+    txSection.classList.remove('fullscreen');
+    txTitle.textContent = "Today's Spends";
+    showExpenses(false);
+  }
+  if (toggleBtn && txSection && txTitle && closeTx) {
+    toggleBtn.addEventListener('click', openTransactions);
+    closeTx.addEventListener('click', closeTransactions);
   }
 
   const order = ['amount', 'category-btn', 'note', 'calendar-btn', 'save-btn'];
