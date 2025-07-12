@@ -3,7 +3,7 @@
   --md-on-primary: #ffffff;
   --md-surface: #fef7ff;
   --md-on-surface: #1c1b1f;
-  --md-surface-variant: #e7e0ec;
+  --md-surface-variant: #d4c8e0;
   --md-sidebar-light: #faf7ff;
 }
 
@@ -166,6 +166,12 @@ main > * {
   font-weight: bold;
   margin: 0.25rem 0 1.5rem;
   overflow-wrap: anywhere;
+  line-height: 1;
+  white-space: nowrap;
+  display: inline-block;
+}
+.amount-dec {
+  font-size: 0.5em;
 }
 
 .button {

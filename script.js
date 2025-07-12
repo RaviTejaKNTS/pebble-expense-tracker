@@ -37,6 +37,31 @@ function getSymbolFromCode(code) {
   }
 }
 
+function formatAmountParts(val) {
+  const str = val.toFixed(2);
+  const [intPart, decPart] = str.split('.');
+  return { intPart, decPart };
+}
+
+function setAmount(element, amount) {
+  if (!element) return;
+  const symbol = getCurrency();
+  const { intPart, decPart } = formatAmountParts(amount);
+  element.innerHTML = `${symbol}<span class="amount-int">${intPart}</span><span class="amount-dec">.${decPart}</span>`;
+  fitAmount(element);
+}
+
+function fitAmount(el) {
+  if (!el || !el.parentElement) return;
+  el.style.fontSize = '';
+  let size = parseFloat(getComputedStyle(el).fontSize);
+  const min = 16;
+  while (el.scrollWidth > el.parentElement.clientWidth && size > min) {
+    size -= 1;
+    el.style.fontSize = size + 'px';
+  }
+}
+
 let selectedDate = new Date();
 let currentCalMonth = new Date();
 let selectedCategory = 'Food';
@@ -196,11 +221,11 @@ function showExpenses() {
 
       list.appendChild(li);
     });
-  totalEl.textContent = `${symbol}${todayTotal.toFixed(2)}`;
-  if (monthlyEl) monthlyEl.textContent = `${symbol}${monthTotal.toFixed(2)}`;
+  setAmount(totalEl, todayTotal);
+  if (monthlyEl) setAmount(monthlyEl, monthTotal);
   if (budgetEl) {
     const remaining = getBudgetAmount() - monthTotal;
-    budgetEl.textContent = `${symbol}${remaining.toFixed(2)}`;
+    setAmount(budgetEl, remaining);
   }
 }
 
@@ -210,6 +235,12 @@ function applyWidgetSettings() {
   const budgetSummary = document.getElementById('budget-summary');
   if (monthlySummary) monthlySummary.hidden = !widgets.includes('monthly');
   if (budgetSummary) budgetSummary.hidden = !widgets.includes('budget');
+  if (monthlySummary && !monthlySummary.hidden) {
+    fitAmount(monthlySummary.querySelector('.today-amount'));
+  }
+  if (budgetSummary && !budgetSummary.hidden) {
+    fitAmount(budgetSummary.querySelector('.today-amount'));
+  }
 }
 
 function updateExpense(id, amount, category, note, date) {
