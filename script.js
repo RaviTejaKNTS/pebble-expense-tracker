@@ -567,13 +567,13 @@ function init() {
   const closeTx = document.getElementById('close-transactions');
   function openTransactions() {
     viewAllTransactions = true;
-    txSection.classList.add('fullscreen');
+    txSection.classList.add('expanded');
     txTitle.textContent = 'All Transactions';
     showExpenses(true);
   }
   function closeTransactions() {
     viewAllTransactions = false;
-    txSection.classList.remove('fullscreen');
+    txSection.classList.remove('expanded');
     txTitle.textContent = "Today's Spends";
     showExpenses(false);
   }
