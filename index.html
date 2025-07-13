@@ -19,11 +19,27 @@
       <div id="sidebar-content" class="sidebar-content"></div>
     </nav>
     <main>
-      <div class="today-summary">
-        <small class="today-label">Spent Today</small>
-        <div id="total" class="today-amount"></div>
+      <div id="widget-row" class="widget-row">
+        <div class="summary-widget today-summary">
+          <small class="today-label">Spent Today</small>
+          <div id="total" class="today-amount"></div>
+        </div>
+        <div id="monthly-summary" class="summary-widget" hidden>
+          <small>Total This Month</small>
+          <div id="monthly-total" class="today-amount"></div>
+        </div>
+        <div id="budget-summary" class="summary-widget" hidden>
+          <small>Remaining Budget</small>
+          <div id="budget-remaining" class="today-amount"></div>
+        </div>
       </div>
-      <ul id="list"></ul>
+      <section id="transactions-section" class="transactions-section">
+        <div class="transactions-header">
+          <h2 class="transactions-title">Today's Spends</h2>
+          <button type="button" id="toggle-transactions" class="link-btn">View all Transactions</button>
+        </div>
+        <ul id="list"></ul>
+      </section>
     </main>
     <div class="fab-wrapper">
       <button id="fab" class="fab">+</button>
@@ -76,6 +92,13 @@
             <div id="currency-options" class="options"></div>
           </div>
         </div>
+        <label for="budget-input">Monthly Budget</label>
+        <input type="number" id="budget-input" placeholder="0">
+        <fieldset class="widget-settings">
+          <legend>Home Widgets</legend>
+          <label><input type="checkbox" id="widget-monthly-setting"> Total monthly spends</label>
+          <label><input type="checkbox" id="widget-budget-setting"> Remaining budget</label>
+        </fieldset>
         <button type="submit" id="settings-save" class="button">Save <span id="save-icon" class="save-icon"></span></button>
       </form>
     </div>
