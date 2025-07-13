@@ -166,7 +166,6 @@ main > * {
   width: 50%;
   max-width: none;
   position: relative;
-  transform-origin: top left;
 }
 
 .transactions-section.expanded {

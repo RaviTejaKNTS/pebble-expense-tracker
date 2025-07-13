@@ -81,22 +81,30 @@ function updateTransactionsPosition() {
   }
 }
 
-function animateFlip(el, first, last) {
-  const dx = first.left - last.left;
-  const dy = first.top - last.top;
-  const sx = first.width / last.width;
-  const sy = first.height / last.height;
-  el.style.transformOrigin = 'top left';
-  el.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
-  el.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
+function animateBounds(el, first, last) {
+  el.style.position = 'fixed';
+  el.style.top = first.top + 'px';
+  el.style.left = first.left + 'px';
+  el.style.width = first.width + 'px';
+  el.style.height = first.height + 'px';
+  el.style.margin = '0';
+  el.style.transition = 'all 0.4s cubic-bezier(0.34,1.56,0.64,1)';
   requestAnimationFrame(() => {
-    el.style.transform = 'none';
+    el.style.top = last.top + 'px';
+    el.style.left = last.left + 'px';
+    el.style.width = last.width + 'px';
+    el.style.height = last.height + 'px';
   });
   el.addEventListener(
     'transitionend',
     () => {
       el.style.transition = '';
-      el.style.transform = '';
+      el.style.position = '';
+      el.style.top = '';
+      el.style.left = '';
+      el.style.width = '';
+      el.style.height = '';
+      el.style.margin = '';
     },
     { once: true }
   );
@@ -633,30 +641,50 @@ function init() {
 
   function openTransactions() {
     const first = txSection.getBoundingClientRect();
-    viewAllTransactions = true;
     txSection.classList.add('expanded');
+    updateTransactionsPosition();
+    const last = txSection.getBoundingClientRect();
+    txSection.classList.remove('expanded');
+    updateTransactionsPosition();
+    viewAllTransactions = true;
     document.body.classList.add('no-scroll');
     txTitle.textContent = 'All Transactions';
     toggleBtn.classList.add('close');
     toggleBtn.innerHTML = '&times;';
     showExpenses(true);
-    updateTransactionsPosition();
-    const last = txSection.getBoundingClientRect();
-    animateFlip(txSection, first, last);
+    animateBounds(txSection, first, last);
+    txSection.addEventListener(
+      'transitionend',
+      () => {
+        txSection.classList.add('expanded');
+        updateTransactionsPosition();
+      },
+      { once: true }
+    );
   }
 
   function closeTransactions() {
     const first = txSection.getBoundingClientRect();
-    viewAllTransactions = false;
     txSection.classList.remove('expanded');
+    updateTransactionsPosition();
+    const last = txSection.getBoundingClientRect();
+    txSection.classList.add('expanded');
+    updateTransactionsPosition();
+    viewAllTransactions = false;
     document.body.classList.remove('no-scroll');
     txTitle.textContent = "Today's Spends";
     toggleBtn.classList.remove('close');
     toggleBtn.textContent = 'View all Transactions';
     showExpenses(false);
-    updateTransactionsPosition();
-    const last = txSection.getBoundingClientRect();
-    animateFlip(txSection, first, last);
+    animateBounds(txSection, first, last);
+    txSection.addEventListener(
+      'transitionend',
+      () => {
+        txSection.classList.remove('expanded');
+        updateTransactionsPosition();
+      },
+      { once: true }
+    );
   }
 
   if (toggleBtn && txSection && txTitle) {
