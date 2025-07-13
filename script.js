@@ -67,6 +67,20 @@ let currentCalMonth = new Date();
 let selectedCategory = 'Food';
 let viewAllTransactions = false;
 
+function updateTransactionsPosition() {
+  const txSection = document.getElementById('transactions-section');
+  if (!txSection) return;
+  const sidebar = document.querySelector('.sidebar');
+  if (txSection.classList.contains('expanded') && sidebar) {
+    const rect = sidebar.getBoundingClientRect();
+    txSection.style.left = rect.right + 16 + 'px';
+    txSection.style.right = '1rem';
+  } else {
+    txSection.style.left = '';
+    txSection.style.right = '';
+  }
+}
+
 function resetForm() {
   const amount = document.getElementById('amount');
   const note = document.getElementById('note');
@@ -140,6 +154,58 @@ function toggleCalendar(forceOpen) {
   }
 }
 
+function createExpenseItem(e, symbol) {
+  const li = document.createElement('li');
+  li.className = 'expense-item';
+  li.dataset.id = e.id;
+
+  const summary = document.createElement('div');
+  summary.className = 'item-summary';
+  summary.innerHTML = `<span>${e.date} - ${e.category}</span><span>${symbol}${e.amount.toFixed(2)}</span>`;
+  li.appendChild(summary);
+
+  const details = document.createElement('div');
+  details.className = 'item-details';
+  details.innerHTML = `
+    <div class="form-fields">
+      <input type="number" class="edit-amount" value="${e.amount}">
+      <div class="category-select">
+        <button type="button" class="edit-cat-btn select-btn">${e.category}</button>
+        <div class="chip-menu edit-cat-menu" hidden>
+          <button type="button" class="chip" data-value="Food">Food</button>
+          <button type="button" class="chip" data-value="Transport">Transport</button>
+          <button type="button" class="chip" data-value="Shopping">Shopping</button>
+          <button type="button" class="chip" data-value="Other">Other</button>
+        </div>
+      </div>
+      <input type="text" class="edit-note" placeholder="Note" value="${e.note || ''}">
+      <button type="button" class="edit-date-btn calendar-btn">📅 <span class="edit-date-display"></span></button>
+      <div class="calendar-view edit-cal-view">
+        <div class="calendar-header">
+          <button type="button" class="cal-nav edit-prev-month">‹</button>
+          <span class="edit-cal-month"></span>
+          <button type="button" class="cal-nav edit-next-month">›</button>
+        </div>
+        <div class="calendar-grid edit-cal-grid"></div>
+      </div>
+      <div class="actions">
+        <button type="button" class="delete-btn">Delete</button>
+        <button type="button" class="save-btn">Save</button>
+      </div>
+    </div>`;
+  li.appendChild(details);
+
+  summary.addEventListener('click', () => {
+    document.querySelectorAll('.expense-item.expanded').forEach(other => {
+      if (other !== li) other.classList.remove('expanded');
+    });
+    li.classList.toggle('expanded');
+  });
+
+  initEditItem(li, e);
+  return li;
+}
+
 function showExpenses(showAll = false) {
   const list = document.getElementById('list');
   const totalEl = document.getElementById('total');
@@ -155,6 +221,7 @@ function showExpenses(showAll = false) {
   const curYear = now.getFullYear();
   const curMonth = now.getMonth();
   list.innerHTML = '';
+  const grouped = {};
   expenses
     .slice()
     .sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -171,58 +238,33 @@ function showExpenses(showAll = false) {
         }
       }
       if (!showAll && e.date !== today) return;
-      const li = document.createElement('li');
-      li.className = 'expense-item';
-      li.dataset.id = e.id;
-
-      const summary = document.createElement('div');
-      summary.className = 'item-summary';
-      summary.innerHTML = `<span>${e.date} - ${e.category}</span><span>${symbol}${e.amount.toFixed(2)}</span>`;
-      li.appendChild(summary);
-
-
-      const details = document.createElement('div');
-      details.className = 'item-details';
-      details.innerHTML = `
-        <div class="form-fields">
-          <input type="number" class="edit-amount" value="${e.amount}">
-          <div class="category-select">
-            <button type="button" class="edit-cat-btn select-btn">${e.category}</button>
-            <div class="chip-menu edit-cat-menu" hidden>
-              <button type="button" class="chip" data-value="Food">Food</button>
-              <button type="button" class="chip" data-value="Transport">Transport</button>
-              <button type="button" class="chip" data-value="Shopping">Shopping</button>
-              <button type="button" class="chip" data-value="Other">Other</button>
-            </div>
-          </div>
-          <input type="text" class="edit-note" placeholder="Note" value="${e.note || ''}">
-          <button type="button" class="edit-date-btn calendar-btn">📅 <span class="edit-date-display"></span></button>
-          <div class="calendar-view edit-cal-view">
-            <div class="calendar-header">
-              <button type="button" class="cal-nav edit-prev-month">‹</button>
-              <span class="edit-cal-month"></span>
-              <button type="button" class="cal-nav edit-next-month">›</button>
-            </div>
-            <div class="calendar-grid edit-cal-grid"></div>
-          </div>
-          <div class="actions">
-            <button type="button" class="delete-btn">Delete</button>
-            <button type="button" class="save-btn">Save</button>
-          </div>
-        </div>`;
-      li.appendChild(details);
-
-      summary.addEventListener('click', () => {
-        document.querySelectorAll('.expense-item.expanded').forEach(other => {
-          if (other !== li) other.classList.remove('expanded');
-        });
-        li.classList.toggle('expanded');
-      });
-
-      initEditItem(li, e);
-
-      list.appendChild(li);
+      if (showAll) {
+        if (!grouped[e.date]) grouped[e.date] = [];
+        grouped[e.date].push(e);
+      } else {
+        const li = createExpenseItem(e, symbol);
+        list.appendChild(li);
+      }
     });
+
+  if (showAll) {
+    Object.keys(grouped)
+      .sort((a, b) => new Date(b) - new Date(a))
+      .forEach(date => {
+        const wrapper = document.createElement('li');
+        wrapper.className = 'date-group';
+        const header = document.createElement('div');
+        header.className = 'date-header';
+        header.textContent = date;
+        const inner = document.createElement('ul');
+        grouped[date].forEach(item => {
+          inner.appendChild(createExpenseItem(item, symbol));
+        });
+        wrapper.appendChild(header);
+        wrapper.appendChild(inner);
+        list.appendChild(wrapper);
+      });
+  }
   setAmount(totalEl, todayTotal);
   if (monthlyEl) setAmount(monthlyEl, monthTotal);
   if (budgetEl) {
@@ -493,6 +535,7 @@ function initSidebarNav() {
     content.innerHTML = '';
     links.forEach(l => l.classList.toggle('active', l.dataset.page === 'home'));
     if (closeBtn) closeBtn.hidden = true;
+    updateTransactionsPosition();
   }
 
   links.forEach(link => {
@@ -509,6 +552,7 @@ function initSidebarNav() {
           sidebar.classList.add('expanded', 'show-page');
           if (closeBtn) closeBtn.hidden = false;
           if (page === 'settings') initSettings();
+          updateTransactionsPosition();
         }
       }
     });
@@ -564,29 +608,44 @@ function init() {
   const toggleBtn = document.getElementById('toggle-transactions');
   const txSection = document.getElementById('transactions-section');
   const txTitle = document.querySelector('.transactions-title');
-  const closeTx = document.getElementById('close-transactions');
+
+
   function openTransactions() {
     viewAllTransactions = true;
     txSection.classList.add('expanded');
     document.body.classList.add('no-scroll');
     txTitle.textContent = 'All Transactions';
+    toggleBtn.classList.add('close');
+    toggleBtn.innerHTML = '&times;';
     showExpenses(true);
+    updateTransactionsPosition();
   }
+
   function closeTransactions() {
     viewAllTransactions = false;
     txSection.classList.remove('expanded');
     document.body.classList.remove('no-scroll');
     txTitle.textContent = "Today's Spends";
+    toggleBtn.classList.remove('close');
+    toggleBtn.textContent = 'View all Transactions';
     showExpenses(false);
+    updateTransactionsPosition();
   }
-  if (toggleBtn && txSection && txTitle && closeTx) {
-    toggleBtn.addEventListener('click', openTransactions);
-    closeTx.addEventListener('click', closeTransactions);
+
+  if (toggleBtn && txSection && txTitle) {
+    toggleBtn.addEventListener('click', () => {
+      if (txSection.classList.contains('expanded')) {
+        closeTransactions();
+      } else {
+        openTransactions();
+      }
+    });
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && txSection.classList.contains('expanded')) {
         closeTransactions();
       }
     });
+    window.addEventListener('resize', updateTransactionsPosition);
   }
 
   const order = ['amount', 'category-btn', 'note', 'calendar-btn', 'save-btn'];

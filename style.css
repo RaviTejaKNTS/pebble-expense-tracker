@@ -201,21 +201,14 @@ main > * {
   text-decoration: none;
 }
 
-.close-transactions {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  background: transparent;
-  border: none;
+.link-btn.close {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.25rem;
-  line-height: 1;
-  color: var(--md-primary);
-  cursor: pointer;
-  display: none;
-}
-
-.transactions-section.expanded .close-transactions {
-  display: block;
 }
 
 .summary-widget {
@@ -367,6 +360,24 @@ li.expanded .item-details {
 .item-details .calendar-btn {
   background: var(--md-on-primary);
   color: var(--md-primary);
+}
+
+.date-group {
+  border: 1px solid var(--md-primary);
+  border-radius: 12px;
+  padding: 0.5rem;
+  margin-bottom: 0.75rem;
+  background: var(--md-surface);
+}
+
+.date-group > ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+
+.date-header {
+  font-weight: bold;
 }
 
 .fab-wrapper {
