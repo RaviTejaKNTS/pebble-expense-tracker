@@ -568,18 +568,25 @@ function init() {
   function openTransactions() {
     viewAllTransactions = true;
     txSection.classList.add('expanded');
+    document.body.classList.add('no-scroll');
     txTitle.textContent = 'All Transactions';
     showExpenses(true);
   }
   function closeTransactions() {
     viewAllTransactions = false;
     txSection.classList.remove('expanded');
+    document.body.classList.remove('no-scroll');
     txTitle.textContent = "Today's Spends";
     showExpenses(false);
   }
   if (toggleBtn && txSection && txTitle && closeTx) {
     toggleBtn.addEventListener('click', openTransactions);
     closeTx.addEventListener('click', closeTransactions);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && txSection.classList.contains('expanded')) {
+        closeTransactions();
+      }
+    });
   }
 
   const order = ['amount', 'category-btn', 'note', 'calendar-btn', 'save-btn'];
