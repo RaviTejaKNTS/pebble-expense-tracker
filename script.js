@@ -81,6 +81,27 @@ function updateTransactionsPosition() {
   }
 }
 
+function animateFlip(el, first, last) {
+  const dx = first.left - last.left;
+  const dy = first.top - last.top;
+  const sx = first.width / last.width;
+  const sy = first.height / last.height;
+  el.style.transformOrigin = 'top left';
+  el.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+  el.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
+  requestAnimationFrame(() => {
+    el.style.transform = 'none';
+  });
+  el.addEventListener(
+    'transitionend',
+    () => {
+      el.style.transition = '';
+      el.style.transform = '';
+    },
+    { once: true }
+  );
+}
+
 function resetForm() {
   const amount = document.getElementById('amount');
   const note = document.getElementById('note');
@@ -611,6 +632,7 @@ function init() {
 
 
   function openTransactions() {
+    const first = txSection.getBoundingClientRect();
     viewAllTransactions = true;
     txSection.classList.add('expanded');
     document.body.classList.add('no-scroll');
@@ -619,9 +641,12 @@ function init() {
     toggleBtn.innerHTML = '&times;';
     showExpenses(true);
     updateTransactionsPosition();
+    const last = txSection.getBoundingClientRect();
+    animateFlip(txSection, first, last);
   }
 
   function closeTransactions() {
+    const first = txSection.getBoundingClientRect();
     viewAllTransactions = false;
     txSection.classList.remove('expanded');
     document.body.classList.remove('no-scroll');
@@ -630,6 +655,8 @@ function init() {
     toggleBtn.textContent = 'View all Transactions';
     showExpenses(false);
     updateTransactionsPosition();
+    const last = txSection.getBoundingClientRect();
+    animateFlip(txSection, first, last);
   }
 
   if (toggleBtn && txSection && txTitle) {
